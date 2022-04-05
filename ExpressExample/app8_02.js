@@ -40,8 +40,12 @@ router.route('/process/login/:name').post(function(req, res){ // login.html의 a
     res.end( );
 });
 
-app.use('/', router);
 // 라우터 객체를 app 객체에 등록
+app.use('/', router);
+
+app.all('*', function(req, res){
+    res.status(404).send('<h1>ERROR - 페이지를 찾을 수 없습니다.</h1>');
+});
 
 http.createServer(app).listen(3000,function(){
     console.log('Express 서버가 3000번 포트에서 시작됨.');
