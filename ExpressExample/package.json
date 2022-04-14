@@ -2,8 +2,9 @@
   "name": "express_example",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app1.js",
   "scripts": {
+    "start" : "node app1.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -11,10 +12,13 @@
   "dependencies": {
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "errorhandler": "^1.5.1",
     "express": "^4.17.3",
     "express-error-handler": "^1.1.0",
     "express-session": "^1.17.2",
+    "fs": "^0.0.1-security",
+    "multer": "^1.4.4",
     "path": "^0.12.7",
     "serve-static": "^1.15.0"
   }
