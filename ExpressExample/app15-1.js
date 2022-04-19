@@ -1,3 +1,11 @@
+/**
+ * cookie parser 미들웨어 사용하기
+ * 
+ * 웹브라우저에서 아래 주소로 요청
+ *    http://localhost:3000/process/showCookie
+ *    http://localhost:3000/process/setUserCookie
+ */
+
 // Express 기본 모듈 불러오기
 var express = require('express')
   , http = require('http')
@@ -19,9 +27,8 @@ var expressSession = require('express-session');
 var multer = require('multer');
 var fs = require('fs');
 
-//클라이언트에서 ajax로 요청 시 CORS(다중 서버 접속) 지원
+// 클라이언트에서 ajax로 요청 시 CORS(다중 서버 접속) 지원
 var cors = require('cors');
-
 
 // 익스프레스 객체 생성
 var app = express();
@@ -35,48 +42,21 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // body-parser를 이용해 application/json 파싱
 app.use(bodyParser.json())
 
-// public 폴더와 uploads 폴더 오픈
 app.use(static(path.join(__dirname, 'public')));
-app.use('/uploads', static(path.join(__dirname, 'uploads')));
+app.use(static(path.join(__dirname, 'uploads')));
+
+// 클라이언트에서 ajax로 요청 시 CORS(다중 서버 접속) 지원
+app.use(cors());
 
 // cookie-parser 설정
 app.use(cookieParser());
 
 // 세션 설정
 app.use(expressSession({
-	secret:'my key',
-	resave:true,
-	saveUninitialized:true
+    secret: 'my key',
+    resave:true,
+    saveUninitialized:true
 }));
-
-
-//클라이언트에서 ajax로 요청 시 CORS(다중 서버 접속) 지원
-app.use(cors());
-
-
-//multer 미들웨어 사용 : 미들웨어 사용 순서 중요  body-parser -> multer -> router
-// 파일 제한 : 10개, 1G
-var storage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, 'uploads')
-    },
-    filename: function (req, file, callback) {
-        /*callback(null, file.originalname + Date.now())*/
-		//callback(null, file.originalname)
-		var extension = path.extname(file.originalname);
-		var basename = path.basename(file.originalname, extension);
-		callback(null, basename + Date.now() + extension);
-	 }
-});
-
-var upload = multer({ 
-    storage: storage,
-    limits: {
-		files: 12,
-		fileSize: 1024 * 1024 * 1024
-	}
-});
-
 
 // 라우터 사용하여 라우팅 함수 등록
 var router = express.Router();
@@ -105,7 +85,7 @@ router.route('/process/login').post(function(req, res) {
     res.write('<div><p>Param id: '  + paramId + '</p></div>');
     res.write('<div><p>Param password: '  + paramPassword + '</p></div>');
     res.write("<br><br><button type = 'button'> <a href = '/process/product'>상품 페이지로 이동하기</a></button>");
-	// res.write("<br><br><button type = 'button'> <a href = '/process/photomulti'>상품 페이지로 이동하기</a></button>");
+    res.write("<button type = 'button'> <a href = '/photomulti3108.html'>파일업로드로 이동하기</a></button>");
     // ;/process/product> 상품 => 105라인의 router.route('/process/product').get으로 연결됨
 	res.end();
     }
@@ -133,7 +113,6 @@ router.route('/process/logout').get(function(req, res) {
     }
 });
 
-
 // 상품정보 라우팅 함수
 router.route('/process/product').get(function(req,res){ 
     console.log('/process/product 호출됨.');
@@ -141,6 +120,28 @@ router.route('/process/product').get(function(req,res){
         res.redirect('/product.html');
     }else{
         res.redirect('/login2.html');
+    }
+});
+
+
+var storage = multer.diskStorage({
+    destination: function(req, file, callback){
+        callback(null, 'uploads');
+    },
+    filename: function (req, file, callback) {
+        /*callback(null, file.originalname + Date.now())*/
+		//callback(null, file.originalname)
+		var extension = path.extname(file.originalname);
+		var basename = path.basename(file.originalname, extension);
+		callback(null, basename + Date.now() + extension);
+	 }
+});
+
+var upload = multer({
+    storage: storage,
+    limits: {
+        files: 12,
+        fileSize: 1024 * 1024 * 1024
     }
 });
 
@@ -177,13 +178,15 @@ router.route('/process/photomulti3108').post(upload.array('photo', 12), function
 					res.write('<p>파일 크기 : ' + size + '</p>');
 					res.end();
 				}
+            //추가
+            res.write("<br><br><button type = 'button'> <a href = '/process/product'>상품 페이지로 이동하기</a></button>");
 
 			}
 	} catch(err) {
 		console.dir(err.stack);
 	}	
 });
- 
+
 app.use('/', router);
 
 
