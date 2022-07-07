@@ -142,26 +142,35 @@ var listuser = function(req, res) {
                 return;
       }
 			  
-			if (results) {
+			if (results.length > 0) {
 				console.dir(results);
-        //view - listuser  수정3 전 시작 - listuser.ejs
-				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
-				res.write('<h2>사용자 리스트</h2>');
-				res.write('<div><ul>');
-				
-				for (var i = 0; i < results.length; i++) {
-					var curId = results[i]._doc.id;
-					var curName = results[i]._doc.name;
-					res.write('    <li>#' + i + ' : ' + curId + ', ' + curName + '</li>');
-				}	
-			
-				res.write('</ul></div>');
-				res.end();    //view - listuser 수정3 전 끝
+        	//view - listuser  수정3 후 시작 - listuser.ejs
+			// 뷰 템플레이트를 이용하여 렌더링한 후 전송
+				var context = {results:results};
+				req.app.render('listuser', context, function(err, html){
+					if(err){
+						console.error('뷰 렌더링 중 에러 발생 : ' + err.stack);
+						res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+						res.write('<h2>뷰 렌더링 중 에러 발생</h2>');
+						res.write('<p>' + err.stack + '</p>');
+						res.end();
+						return;
+					}
+					console.log("rendered : " + html);
+
+					res.end(html);
+				});
+				res.end();    //view - listuser 수정3 후 끝
 			} else {
-        //view - listuser  수정4 전 시작 - listuser_fail.ejs				
-				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
-				res.write('<h2>사용자 리스트 조회  실패</h2>');
-				res.end();    //view - listuser_fail 수정4 전 끝
+        //view - listuser  수정4 후 시작 - listuser_fail.ejs	
+				var context = {results:results};
+				if(results.length == 0){
+					req.app.render('listuser_fail', context, function(err, html){
+						console.log("rendered : " + html);
+						res.end(html)
+					});
+				}
+			 //view - listuser_fail 수정4 후 끝
 			}
 		});//database.UserModel.findAll -end
 	} else {
