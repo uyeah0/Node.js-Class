@@ -104,10 +104,25 @@ var adduser = function(req, res) {
       // 결과 객체 있으면 성공 응답 전송
 			if (addedUser) {
 				console.dir(addedUser);
-        //view - adduser  수정5 전 시작 - adduser.ejs
-				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
-				res.write('<h2>사용자 추가 성공</h2>');
-				res.end();//view - listuser  수정5 전 끝
+        //view - adduser  수정5 후 시작 - adduser.ejs
+			var context = {title:'사용자 추가 성공'};
+			req.app.render('adduser', context, function(err, html){
+				if(err){
+					console.error('뷰 렌더링 중 에러 발생 : ' + err.stack);
+
+					res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+					res.write('<h2>뷰 렌더링 중 에러 발생</h2>');
+					res.write('<p>' + err.stack + '</p>');
+					res.end();
+
+					return ;
+				}
+				console.log("rendered : " + html);
+
+				res.end(html);
+			});
+		
+		//view - listuser  수정5 후 끝
 			} else {  
 				console.dir(addedUser);
 				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});

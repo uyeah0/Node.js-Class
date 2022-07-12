@@ -2,37 +2,33 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>사용자 리스트 페이지</title>
+		<title>사용자 추가 페이지</title>
               <meta name="viewport" content="width=device-width, initial-scale=1">
               <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
               <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
               <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
               <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
     </head>
+    <% include ./head.ejs %>
     <body>
         <div class="container">
         <hr>
-        <h3>사용자 리스트</h3>
+        <h3>사용자 추가</h3>
         <hr>    
-        <ul class="list-group">
-            <% 
-            for(var i = 0; i < results.length; i++){
-                var curId = results[i]._doc.id;
-                var curName = results[i]._doc.name;
-            %>
-            <li class="list-group-item">#<%= i %> - 아이디 : <%= curId %>, 이름 : <%= curName %></li>
-            <%
-            }
-            %>
-        </ul>
+        <div class="media border p-3">
+            <div class=cardbody>
+                <div class="form-group">
+                    <h5><%= title %></h5>
+                </div>
+            </div>
+        </div>
         <br>
         <a href="/public/login.html" class="btn btn-info" role="button">로그인</a>
         <a href="/public/index.html" class="btn btn-info" role="button">메인페이지</a>
-        <a href="/public/adduser.html" class="btn btn-info" role="button">사용자 추가</a>
-        <a href="/public/listuser.html" class="btn btn-info" role="button">사용자 요청</a>
-        
-        </div>
-    </div>
+        <a href="/public/listuser.html" class="btn btn-info" role="button">사용자 리스트</a>
+
+        <br>
+        <% include ./footer.ejs %>
        
     </body>
 </html>
